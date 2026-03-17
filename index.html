@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="إل ماهر برفيوم - عطور فاخرة مصنوعة من مكونات فائقة الجودة">
+    <title data-i18n="hero_title">إل ماهر للعطور | عطور فاخرة</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+
+    <!-- NAV -->
+    <nav>
+        <div class="logo">
+            <img src="/image.jpg" alt="إل ماهر برفيوم" class="logo-img">
+        </div>
+        <div class="nav-links">
+            <a href="#home" data-i18n="home">الرئيسية</a>
+            <a href="shop.html" data-i18n="shop">المتجر</a>
+            <a href="#about" data-i18n="about">من نحن</a>
+            <a href="#contact" data-i18n="contact">تواصل معنا</a>
+        </div>
+        <div class="lang-switcher">
+            <button class="lang-btn active" data-lang="ar">عربي</button>
+            <button class="lang-btn" data-lang="en">English</button>
+        </div>
+        <div class="cart" id="cartBtn">
+            <span data-i18n="cart">السلة</span> (<span id="cartCount">0</span>)
+        </div>
+    </nav>
+
+  <!-- HERO -->
+    <section id="home" class="hero">
+        <div class="scene">
+            <div class="perfume-container">
+                <div class="perfume"></div>
+            </div>
+        </div>
+        <h1 data-i18n="hero_title">إل ماهر للعطور</h1>
+        <p data-i18n="hero_sub">عطر فاخر لكل لحظة مميزة</p>
+        <a href="#products" class="hero-btn" data-i18n="hero_btn">تسوق الآن</a>
+    </section>
+
+<!-- PRODUCTS CAROUSEL -->
+    <section id="products" class="products">
+        <h2 data-i18n="products_title">عطور مميزة</h2>
+        <div class="carousel-container">
+            <button class="carousel-arrow prev" onclick="moveCarousel(-1)">❮</button>
+            <div class="carousel-track" id="carouselTrack"></div>
+            <button class="carousel-arrow next" onclick="moveCarousel(1)">❯</button>
+        </div>
+        <div class="view-all-container">
+            <a href="shop.html" class="view-all-btn" data-i18n="view_all">عرض كل العطور</a>
+        </div>
+    </section>
+
+<!-- ABOUT -->
+    <section id="about" class="about">
+        <div class="about-content">
+            <h2 class="about-title" data-i18n="about_title">من نحن</h2>
+            <p class="about-text" data-i18n="about_text">
+                في إل ماهر للعطور نصنع عطورًا فاخرة من أثمن المكونات العطرية النادرة.<br>
+                كل رائحة هي قصة... قصة أناقة، تميّز، وهوية لا تُنسى.<br>
+                <span class="highlight">تجربة واحدة فقط... تكفي لتصبح جزءًا من ذاكرتك إلى الأبد.</span>
+            </p>
+        </div>
+    </section>
+
+  <!-- CONTACT -->
+    <section id="contact" class="contact">
+        <h2 data-i18n="contact_title">تواصل معنا</h2>
+        <form id="contactForm">
+            <input type="text" id="name" placeholder="الاسم" required>
+            <input type="email" id="email" placeholder="البريد الإلكتروني" required>
+            <textarea id="message" placeholder="رسالتك" required></textarea>
+            <button type="submit">إرسال</button>
+        </form>
+    </section>
+
+<!-- CART PANEL -->
+<div class="cart-panel" id="cartPanel">
+    <div class="cart-header">
+        <h2 data-i18n="cart">سلة التسوق</h2>
+        <button class="close-cart" onclick="toggleCart()">✕</button>
+    </div>
+
+    <ul id="cartItems" class="cart-items-list"></ul>
+
+    <div class="cart-summary">
+        <div class="total-line">
+            <span data-i18n="total">الإجمالي</span>
+            <strong id="total">0 ج.م</strong>
+        </div>
+        <button class="clear-cart-btn" onclick="clearCart()" style="margin:10px 0; background:#444; color:white; padding:10px 20px; border:none; border-radius:50px; cursor:pointer; width:100%;">
+            تفريغ السلة
+        </button>
+        <button class="checkout-btn" onclick="goToCheckout()" data-i18n="checkout">إتمام الطلب</button>
+    </div>
+
+    <div id="emptyCartMessage" class="empty-cart" style="display:none; padding:80px 20px; text-align:center;">
+        <div style="font-size:5rem; opacity:0.4;">🛒</div>
+        <p data-i18n="empty_cart">السلة فارغة حالياً</p>
+        <a href="shop.html" class="shop-now-link" data-i18n="shop_now">تسوق الآن</a>
+    </div>
+</div>
+<!-- FOOTER -->
+<footer>
+    <div class="footer-content">
+        <!-- الأيقونات على اليسار -->
+        <div class="social-icons">
+            <a href="https://www.facebook.com/profile.php?id=100063992085426" target="_blank" aria-label="فيسبوك" title="فيسبوك">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="https://wa.me/201001884304" target="_blank" aria-label="واتساب" title="واتساب">
+                <i class="fab fa-whatsapp"></i>
+            </a>
+        </div>
+
+        <div class="footer-info">
+            <p>© 2026 إل ماهر للعطور – جميع الحقوق محفوظة</p>
+        </div>
+    </div>
+</footer>
+<!-- WELCOME POPUP -->
+    <div class="welcome-popup" id="welcomePopup">
+        <div class="popup-content">
+            <h2 data-i18n="welcome_title">مرحباً بك في إل ماهر للعطور</h2>
+            <p data-i18n="welcome_text">
+                استمتع بخصم <strong style="color:#d4af37;" data-i18n="welcome_discount">10%</strong> 
+                <span data-i18n="welcome_text2">على أول طلبك باستخدام كود:</span>
+            </p>
+            <div style="font-size:2.4rem; font-weight:900; color:#d4af37; margin:25px 0; letter-spacing:3px;" data-i18n="welcome_code">WELCOME10</div>
+            <p data-i18n="welcome_footer">اطلب الآن واستمتع بتجربة عطر فاخرة</p>
+            <button class="close-popup" id="closePopup" data-i18n="welcome_button">حسناً، شكراً!</button>
+        </div>
+    </div>
+<script src="script.js" defer></script>
+    <!-- Floating WhatsApp -->
+<a href="https://wa.me/201001884304?text=مرحباً، عايز أستفسر عن عطر..." 
+       class="whatsapp-float" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+    </a>
+</body>
+</html>

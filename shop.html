@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المتجر | إل ماهر للعطور</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- NAV -->
+    <nav>
+        <div class="logo">
+            <img src="/img/image.jpg" alt="إل ماهر برفيوم" class="logo-img">
+        </div>
+        <div class="nav-links">
+            <a href="index.html">الرئيسية</a>
+            <a href="shop.html">المتجر</a>
+            <a href="index.html#about">من نحن</a>
+            <a href="index.html#contact">تواصل معنا</a>
+        </div>
+        <div class="cart" id="cartBtn">
+            🛒 السلة (<span id="cartCount">0</span>)
+        </div>
+    </nav>
+
+    <!-- SHOP -->
+    <section class="shop">
+        <h1>كل مجموعة العطور</h1>
+        <p class="shop-subtitle">اكتشف مجموعتنا الكاملة من العطور الفاخرة</p>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" data-category="all">الكل</button>
+            <button class="tab" data-category="رجالي">رجالي</button>
+            <button class="tab" data-category="نسائي">نسائي</button>
+            <button class="tab" data-category="يونيسكس">يونيسكس</button>
+            <button class="tab" data-category="جديد">جديد</button>
+        </div>
+
+        <!-- زر فلاتر على الموبايل -->
+        <button class="mobile-filters-toggle" id="mobileFiltersBtn">فلاتر البحث ▼</button>
+
+        <!-- Controls -->
+        <div class="shop-controls">
+            <input type="text" id="searchInput" placeholder="ابحث عن عطر..." class="search-bar">
+
+            <div class="filters">
+                <div class="price-range">
+                    <input type="number" id="minPrice" placeholder="السعر من">
+                    <input type="number" id="maxPrice" placeholder="إلى">
+                </div>
+
+                <select id="sortSelect">
+                    <option value="default">الترتيب الافتراضي</option>
+                    <option value="price-asc">الأرخص أولاً</option>
+                    <option value="price-desc">الأغلى أولاً</option>
+                    <option value="name-asc">أ–ي</option>
+                    <option value="name-desc">ي–أ</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="shop-grid" id="shopGrid"></div>
+    </section>
+
+ <!-- CART PANEL -->
+<div class="cart-panel" id="cartPanel">
+    <div class="cart-header">
+        <h2 data-i18n="cart">سلة التسوق</h2>
+        <button class="close-cart" onclick="toggleCart()">✕</button>
+    </div>
+
+    <ul id="cartItems" class="cart-items-list"></ul>
+
+    <div class="cart-checkout-form" id="checkoutForm" style="display:none; padding: 20px;">
+        <h3 style="color:#d4af37; margin-bottom:15px;">بيانات الطلب</h3>
+        <input type="text" id="customerName" placeholder="الاسم الكامل" required style="width:100%; padding:12px; margin:10px 0; border-radius:8px; border:1px solid #d4af37; background:#222; color:white;">
+        <input type="tel" id="customerPhone" placeholder="رقم الواتساب (مثال: 01001884304)" required style="width:100%; padding:12px; margin:10px 0; border-radius:8px; border:1px solid #d4af37; background:#222; color:white;">
+        <textarea id="customerNote" placeholder="ملاحظات إضافية (اختياري)" style="width:100%; padding:12px; margin:10px 0; border-radius:8px; border:1px solid #d4af37; background:#222; color:white; min-height:80px;"></textarea>
+    </div>
+
+    <div class="cart-summary">
+        <div class="total-line">
+            <span data-i18n="total">الإجمالي</span>
+            <strong id="total">0 ج.م</strong>
+        </div>
+<button class="checkout-btn" onclick="goToCheckout()" data-i18n="checkout">إتمام الطلب</button>
+    </div>
+
+    <div id="emptyCartMessage" class="empty-cart" style="display:none; padding:80px 20px; text-align:center;">
+        <div style="font-size:5rem; opacity:0.4;">🛒</div>
+        <p data-i18n="empty_cart">السلة فارغة حالياً</p>
+        <a href="shop.html" class="shop-now-link" data-i18n="shop_now">تسوق الآن</a>
+    </div>
+</div>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="image-modal" onclick="closeImageModal(event)">
+        <span class="modal-close" onclick="closeImageModal()">×</span>
+        <img class="modal-content" id="modalImage">
+        <div id="caption"></div>
+    </div>
+
+    <!-- WELCOME POPUP -->
+    <div class="welcome-popup" id="welcomePopup">
+        <div class="popup-content">
+            <h2>مرحباً بك في إل ماهر للعطور</h2>
+            <p>استمتع بخصم <strong style="color:#d4af37;">10%</strong> على أول طلبك باستخدام كود:</p>
+            <div style="font-size:2.4rem; font-weight:900; color:#d4af37; margin:25px 0; letter-spacing:3px;">WELCOME10</div>
+            <p>اطلب الآن واستمتع بتجربة عطر فاخرة</p>
+            <button class="close-popup" id="closePopup">حسناً، شكراً!</button>
+        </div>
+    </div>
+
+    <!-- Floating WhatsApp -->
+    <a href="https://wa.me/201001884304?text=مرحباً، عايز أستفسر عن عطر..." 
+       class="whatsapp-float" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+    </a>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>إل ماهر للعطور</h4>
+                <p>عطور فاخرة مصنوعة بعناية فائقة من أجود المكونات العالمية</p>
+            </div>
+
+            <div class="footer-section">
+                <h4>روابط سريعة</h4>
+                <p><a href="index.html">الرئيسية</a></p>
+                <p><a href="shop.html">المتجر</a></p>
+                <p><a href="index.html#about">من نحن</a></p>
+                <p><a href="index.html#contact">تواصل معنا</a></p>
+            </div>
+
+            <div class="footer-section">
+                <h4>سياساتنا</h4>
+                <p><a href="#">سياسة الخصوصية</a></p>
+                <p><a href="#">سياسة الإرجاع والاستبدال</a></p>
+            </div>
+
+            <div class="footer-section">
+                <h4>تواصل معنا</h4>
+                <p>للطلبات والاستفسارات:</p>
+                <p>01001884304</p>
+                        <div class="social-icons">
+                                <a href="https://www.facebook.com/profile.php?id=100063992085426" target="_blank" title="فيسبوك">
+                                 <i class="fab fa-facebook-f"></i>
+                                            </a>
+                                  <a href="https://wa.me/201001884304" target="_blank" title="واتساب">
+                                    <i class="fab fa-whatsapp"></i>
+    </a>
+</div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            © 2026 إل ماهر برفيوم – جميع الحقوق محفوظة
+        </div>
+    </footer>
+
+    <script src="script.js" defer></script>
+</body>
+</html>

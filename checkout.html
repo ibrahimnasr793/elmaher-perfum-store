@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إتمام الطلب | إل ماهر للعطور</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            emailjs.init("TNGhTazE_iHRydmLZ");
+        })();
+    </script>
+
+    <style>
+        .checkout-page { background: #0a0a0a; padding: 130px 5% 100px; min-height: 100vh; }
+        .checkout-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+        }
+        @media (max-width: 992px) { .checkout-container { grid-template-columns: 1fr; gap: 40px; } }
+        .section {
+            background: #111;
+            padding: 45px 40px;
+            border-radius: 24px;
+            border: 1px solid #222;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+        .section h2 {
+            color: #d4af37;
+            font-size: 1.85rem;
+            margin-bottom: 35px;
+            font-weight: 700;
+            text-align: center;
+        }
+        .form-group { margin-bottom: 24px; }
+        .form-group label { display: block; margin-bottom: 9px; color: #ddd; font-weight: 500; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 15px 18px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 14px;
+            color: white;
+            font-size: 1.05rem;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: #d4af37;
+            box-shadow: 0 0 0 4px rgba(212,175,55,0.2);
+        }
+        .payment-method {
+            padding: 16px;
+            background: #1a1a1a;
+            border: 2px solid #d4af37;
+            border-radius: 12px;
+            color: #d4af37;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #222;
+        }
+        .summary-item img {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .qty-controls button {
+            width: 32px;
+            height: 32px;
+            background: #222;
+            color: #d4af37;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        .qty-controls button:hover { background: #d4af37; color: #111; }
+        .qty-controls span { font-weight: 600; min-width: 30px; text-align: center; }
+        .remove-btn { color: #ff5555; font-size: 1.3rem; cursor: pointer; background:none; border:none; }
+        .total {
+            font-size: 1.75rem;
+            color: #d4af37;
+            font-weight: 700;
+            text-align: center;
+            margin: 30px 0 15px;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+        }
+        .whatsapp-btn {
+            width: 100%;
+            padding: 18px 30px;
+            background: linear-gradient(135deg, #d4af37, #b8972e);
+            color: #111;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.28rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.35s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        .whatsapp-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(212,175,55,0.45);
+        }
+        .success-msg {
+            display: none;
+            margin-top: 35px;
+            padding: 22px;
+            background: linear-gradient(135deg, #1a3a2a, #0f221a);
+            color: #4ade80;
+            border-radius: 16px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.25rem;
+            border: 1px solid #4ade80;
+            box-shadow: 0 6px 20px rgba(74,222,128,0.15);
+        }
+        .success-msg i { font-size: 2.8rem; margin-bottom: 15px; display: block; }
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            padding: 16px 32px;
+            border-radius: 16px;
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            z-index: 9999;
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .toast.success { background: linear-gradient(135deg, #28a745, #1e7e34); }
+        .toast.error { background: linear-gradient(135deg, #dc3545, #b02a37); }
+        .toast.show { opacity: 1; transform: translateY(0) scale(1); }
+        .toast i { font-size: 1.5rem; }
+        /* Confirm Popup */
+        #confirmPopup {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+        .confirm-box {
+            background: linear-gradient(135deg,#111,#1a1a1a);
+            padding: 50px 45px;
+            border-radius: 24px;
+            border: 3px solid #d4af37;
+            max-width: 460px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 20px 60px rgba(212,175,55,0.35);
+        }
+        .confirm-box h3 { color: #d4af37; margin-bottom: 20px; font-size: 2rem; }
+        .confirm-box p { font-size: 1.15rem; margin-bottom: 30px; }
+        .confirm-box .buttons { display: flex; gap: 25px; justify-content: center; }
+        .confirm-box button {
+            padding: 14px 55px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .confirm-box .yes { background: #d4af37; color: #111; }
+        .confirm-box .yes:hover { background: #fff; transform: scale(1.08); }
+        .confirm-box .no { background: #444; color: white; }
+        .confirm-box .no:hover { background: #666; }
+    </style>
+</head>
+<body>
+
+    <!-- NAV -->
+    <nav>
+        <div class="logo">
+            <img src="/image.jpg" alt="إل ماهر برفيوم" class="logo-img">
+        </div>
+        <div class="nav-links">
+            <a href="index.html">الرئيسية</a>
+            <a href="shop.html">المتجر</a>
+            <a href="index.html#about">من نحن</a>
+            <a href="index.html#contact">تواصل معنا</a>
+        </div>
+        <div class="lang-switcher">
+            <button class="lang-btn active" data-lang="ar">عربي</button>
+            <button class="lang-btn" data-lang="en">English</button>
+        </div>
+        <div class="cart" id="cartBtn" style="cursor: pointer;">
+            🛒 السلة (<span id="cartCount">0</span>)
+        </div>
+    </nav>
+
+    <section class="checkout-page">
+        <div class="checkout-container">
+            
+            <!-- بيانات العميل -->
+            <div class="section">
+                <h2>بيانات العميل</h2>
+                <div class="form-group">
+                    <label>الاسم الكامل *</label>
+                    <input type="text" id="customerName" placeholder="أدخل اسمك الكامل" required>
+                </div>
+                <div class="form-group">
+                    <label>رقم الواتساب *</label>
+                    <input type="tel" id="customerPhone" placeholder="01001884304" value="01001884304" required>
+                </div>
+                <div class="form-group">
+                    <label>البريد الإلكتروني *</label>
+                    <input type="email" id="customerEmail" placeholder="example@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>المحافظة *</label>
+                    <select id="customerGovernorate" required>
+                        <option value="">اختر المحافظة</option>
+                        <option value="القاهرة">القاهرة</option>
+                        <option value="الجيزة">الجيزة</option>
+                        <option value="الإسكندرية">الإسكندرية</option>
+                        <option value="الدقهلية">الدقهلية</option>
+                        <option value="الشرقية">الشرقية</option>
+                        <option value="المنوفية">المنوفية</option>
+                        <option value="الفيوم">الفيوم</option>
+                        <option value="البحيرة">البحيرة</option>
+                        <option value="الغربية">الغربية</option>
+                        <option value="كفر الشيخ">كفر الشيخ</option>
+                        <option value="أسيوط">أسيوط</option>
+                        <option value="سوهاج">سوهاج</option>
+                        <option value="قنا">قنا</option>
+                        <option value="أسوان">أسوان</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>العنوان بالتفصيل *</label>
+                    <textarea id="customerAddress" rows="3" placeholder="الشارع - رقم المبنى - العمارة - الدور ..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>ملاحظات إضافية (اختياري)</label>
+                    <textarea id="customerNote" rows="2" placeholder="أي تعليمات خاصة..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>طريقة الدفع</label>
+                    <div class="payment-method">
+                        الدفع عند الاستلام (كاش أون دليفري) – الخيار المتاح حاليًا
+                    </div>
+                </div>
+
+                <button class="whatsapp-btn" onclick="showConfirmPopup()">
+                    <i class="fab fa-whatsapp"></i>
+                    إتمام الطلب وإرسال عبر واتساب
+                </button>
+
+                <!-- حالة الطلب + زر رجوع -->
+                <div id="orderSuccessMessage" class="success-msg" style="display:none;">
+                    <i class="fas fa-check-circle"></i>
+                    <div>تم إرسال طلبك بنجاح!</div>
+                    <div style="margin:15px 0; color:#bbb; font-size:1.1rem;">حالة الطلب: قيد الانتظار</div>
+                    <button onclick="window.location.href='shop.html'" style="padding:14px 50px; background:#d4af37; color:#111; border:none; border-radius:50px; font-weight:700; cursor:pointer; margin-top:15px; font-size:1.1rem;">
+                        رجوع إلى المتجر
+                    </button>
+                </div>
+            </div>
+
+            <!-- ملخص الطلب -->
+            <div class="section">
+                <h2>ملخص الطلب</h2>
+                <div id="orderSummary"></div>
+                <div class="total" id="totalPrice">الإجمالي: 0 ج.م</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pop-up التأكيد -->
+    <div id="confirmPopup" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(8px); z-index:9999; align-items:center; justify-content:center;">
+        <div style="background:linear-gradient(135deg,#111,#1a1a1a); padding:50px 45px; border-radius:24px; border:3px solid #d4af37; max-width:460px; text-align:center; color:white; box-shadow:0 20px 60px rgba(212,175,55,0.35);">
+            <i class="fas fa-question-circle" style="font-size:3.5rem; color:#d4af37; margin-bottom:20px;"></i>
+            <h3 style="color:#d4af37; margin-bottom:20px; font-size:2rem;">تأكيد الطلب</h3>
+            <p style="font-size:1.15rem; margin-bottom:30px;">هل أنت متأكد من إتمام الطلب؟</p>
+            <p style="color:#bbb; font-size:1rem;">سيتم إرسال الطلب تلقائيًا</p>
+            <div style="margin-top:35px; display:flex; gap:25px; justify-content:center;">
+                <button onclick="document.getElementById('confirmPopup').style.display='none'" style="padding:14px 55px; background:#444; color:white; border:none; border-radius:50px; font-size:1.15rem; cursor:pointer;">
+                    إلغاء
+                </button>
+                <button id="confirmSendBtn" style="padding:14px 55px; background:#d4af37; color:#111; border:none; border-radius:50px; font-size:1.15rem; font-weight:700; cursor:pointer;">
+                    نعم، أرسل الطلب
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="social-icons">
+                <a href="https://www.facebook.com/profile.php?id=100063992085426" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://wa.me/201558474988" target="_blank"><i class="fab fa-whatsapp"></i></a>
+            </div>
+            <p>© 2026 إل ماهر للعطور – جميع الحقوق محفوظة</p>
+        </div>
+    </footer>
+
+    <script src="script.js" defer></script>
+
+    <script>
+        function renderOrderSummary() {
+            const summaryDiv = document.getElementById('orderSummary');
+            const totalEl = document.getElementById('totalPrice');
+            const savedCart = JSON.parse(localStorage.getItem('cart')) || [];
+
+            if (savedCart.length === 0) {
+                summaryDiv.innerHTML = '<p style="text-align:center; color:#888; padding:80px 0;">السلة فارغة حالياً</p>';
+                totalEl.textContent = 'الإجمالي: 0 ج.م';
+                return;
+            }
+
+            let html = '';
+            let grandTotal = 0;
+
+            savedCart.forEach((item, index) => {
+                const product = productsData.find(p => p.name === item.name) || {};
+                const itemTotal = item.price * (item.quantity || 1);
+                grandTotal += itemTotal;
+
+                html += `
+                    <div class="summary-item">
+                        <div style="display:flex; align-items:center; gap:16px; flex:1;">
+                            <img src="${product.img || 'img/placeholder.jpg'}" alt="${item.name}" loading="lazy">
+                            <div>
+                                <strong>${item.name}</strong><br>
+                                <small>${item.price.toLocaleString()} ج.م</small>
+                            </div>
+                        </div>
+                        <div class="qty-controls">
+                            <button onclick="updateCartItem(${index}, -1)">−</button>
+                            <span>${item.quantity || 1}</span>
+                            <button onclick="updateCartItem(${index}, 1)">+</button>
+                        </div>
+                        <div style="color:#d4af37; font-weight:700; min-width:100px; text-align:right;">
+                            ${itemTotal.toLocaleString()} ج.م
+                            <button class="remove-btn" onclick="removeCartItem(${index})">✕</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            summaryDiv.innerHTML = html;
+            totalEl.textContent = `الإجمالي: ${grandTotal.toLocaleString()} ج.م`;
+        }
+
+        function updateCartItem(index, delta) {
+            let savedCart = JSON.parse(localStorage.getItem('cart')) || [];
+            if (savedCart[index]) {
+                savedCart[index].quantity = Math.max(1, (savedCart[index].quantity || 1) + delta);
+                localStorage.setItem('cart', JSON.stringify(savedCart));
+                renderOrderSummary();
+            }
+        }
+
+        function removeCartItem(index) {
+            if (confirm('هل تريد حذف هذا المنتج؟')) {
+                let savedCart = JSON.parse(localStorage.getItem('cart')) || [];
+                savedCart.splice(index, 1);
+                localStorage.setItem('cart', JSON.stringify(savedCart));
+                renderOrderSummary();
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<i class="${type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle'}"></i> ${message}`;
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.classList.add('show'), 100);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 3200);
+        }
+
+        function showConfirmPopup() {
+            document.getElementById('confirmPopup').style.display = 'flex';
+        }
+
+        document.getElementById('confirmSendBtn').onclick = function() {
+            document.getElementById('confirmPopup').style.display = 'none';
+
+            const name = document.getElementById('customerName').value.trim();
+            const phone = document.getElementById('customerPhone').value.trim();
+            const email = document.getElementById('customerEmail').value.trim();
+            const governorate = document.getElementById('customerGovernorate').value;
+            const address = document.getElementById('customerAddress').value.trim();
+            const note = document.getElementById('customerNote').value.trim();
+
+            if (!name || !phone || !email || !governorate || !address) {
+                showToast('يرجى ملء جميع الحقول المطلوبة', 'error');
+                return;
+            }
+
+            if (!/^\d{10,11}$/.test(phone)) {
+                showToast('رقم الواتساب غير صحيح (يجب أن يكون 10 أو 11 رقم)', 'error');
+                return;
+            }
+
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                showToast('البريد الإلكتروني غير صحيح', 'error');
+                return;
+            }
+
+            const savedCart = JSON.parse(localStorage.getItem('cart')) || [];
+            if (savedCart.length === 0) {
+                showToast('السلة فارغة!', 'error');
+                return;
+            }
+
+            let products = '';
+            let total = 0;
+
+            savedCart.forEach(item => {
+                const itemTotal = item.price * (item.quantity || 1);
+                total += itemTotal;
+                products += `• ${item.name} × ${item.quantity || 1} = ${itemTotal.toLocaleString()} ج.م\n`;
+            });
+
+            const orderData = {
+                name: name,
+                phone: phone,
+                email: email,
+                governorate: governorate,
+                address: address,
+                note: note,
+                products: products,
+                total: total.toLocaleString() + ' ج.م',
+                status: 'قيد الانتظار',
+                date: new Date().toLocaleString('ar-EG'),
+                order_id: 'ORD-' + Date.now().toString().slice(-6)
+            };
+
+            console.log("البيانات اللي هتتبعت:", orderData);
+
+            const scriptUrl = "https://script.google.com/macros/s/AKfycbzg0BjhE-vL2MLUKvUxXIuoaKQ-GavktfPcBO8_jISOPtQQOm656_E_LByBFUMtgh2N/exec";
+
+            fetch(scriptUrl, {
+                method: 'POST',
+                body: JSON.stringify(orderData),
+                headers: { 'Content-Type': 'application/json' },
+                mode: 'no-cors'
+            }).then(() => {
+                console.log("تم إرسال البيانات للشيت");
+            }).catch(err => {
+                console.error("خطأ في الإرسال للشيت:", err);
+            });
+
+            emailjs.send("service_anrft7b", "template_1rc633l", {
+                to_email: email,
+                name: name,
+                email: email,
+                order_id: orderData.order_id,
+                total: orderData.total,
+                products: products,
+                address: address + " - " + governorate,
+                phone: phone
+            }).then((response) => {
+                console.log("إيميل التأكيد اتبعت بنجاح:", response);
+            }).catch((err) => {
+                console.error("مشكلة في إرسال الإيميل:", err);
+            });
+
+            setTimeout(() => {
+                showToast('تم إرسال الطلب بنجاح ✓', 'success');
+                document.getElementById('orderSuccessMessage').style.display = 'block';
+                localStorage.removeItem('cart');
+                renderOrderSummary();
+            }, 800);
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderOrderSummary();
+            document.getElementById('cartBtn')?.addEventListener('click', () => {
+                if (typeof toggleCart === 'function') {
+                    toggleCart();
+                } else {
+                    console.warn("دالة toggleCart مش موجودة في script.js");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
